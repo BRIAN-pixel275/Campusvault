@@ -20,6 +20,7 @@ import {
   File,
   CheckCircle2,
 } from 'lucide-react'
+import { useEffect } from 'react'
 
 const resources = [
   {
@@ -61,12 +62,22 @@ const navigation = [
   { name: 'Bookmarks', icon: Bookmark },
 ]
 
+
+
 function App() {
   const [activeNav, setActiveNav] = useState('Overview')
   const [search, setSearch] = useState('')
   const [mobileMenu, setMobileMenu] = useState(false)
   const [selectedFile, setSelectedFile] = useState('')
   const fileInput = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+  document.body.style.overflow = mobileMenu ? 'hidden' : ''
+
+  return () => {
+    document.body.style.overflow = ''
+  }
+}, [mobileMenu])
 
   const filteredResources = resources.filter((resource) =>
     `${resource.title} ${resource.unit} ${resource.category}`
@@ -91,10 +102,20 @@ function App() {
       <div className="flex min-h-screen">
 
         {/* SIDEBAR */}
+        {/* MOBILE BACKDROP */}
+{mobileMenu && (
+  <button
+    aria-label="Close navigation menu"
+    onClick={() => setMobileMenu(false)}
+    className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px] lg:hidden"
+  />
+)}
         <aside
-          className={`${
-            mobileMenu ? 'flex' : 'hidden'
-          } lg:flex flex-col w-64 shrink-0 border-r border-gray-100 bg-white px-6 py-7 fixed lg:sticky top-0 h-screen z-40`}
+       className={`${
+  mobileMenu ? 'flex translate-x-0' : 'hidden -translate-x-full'
+} lg:flex flex-col w-[min(84vw,280px)] lg:w-64 shrink-0
+fixed lg:sticky top-0 left-0 h-screen z-50
+bg-white px-6 py-7 transition-transform duration-300`}
         >
           <div className="mb-12">
             <h1 className="font-heading text-4xl tracking-wide">

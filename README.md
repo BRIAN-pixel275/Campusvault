@@ -1,75 +1,89 @@
-# React + TypeScript + Vite
+# CampusVault
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CampusVault is a student-first academic resource dashboard designed to keep lecture notes, revision materials, coursework, and past papers organized in one place.
 
-Currently, two official plugins are available:
+Built with React, TypeScript, and Vite, the app presents a clean library-style interface that helps students manage their learning resources quickly and efficiently.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Overview
 
-## React Compiler
+The application currently focuses on the front-end experience for an academic workspace:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- A dashboard for recent resources and key academic stats
+- Search and filter support for notes and papers
+- A library-style layout for course materials
+- A document upload section for adding study resources
+- A modern, minimal design that feels organized and easy to scan
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Search across titles, course units, and categories
+- View academic items grouped by type, including notes, revision materials, and past papers
+- Add resource entries through a file-upload flow
+- Monitor the collection with quick summary cards for total resources, units, past papers, and bookmarks
+- Responsive layout built for desktop and smaller screens
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- Lucide React icons
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
 
+### Prerequisites
+
+- Node.js 18 or later
+- npm
+
+### Install dependencies
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+### Run the app locally
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run dev
 ```
+
+The app will be available in the browser at the local Vite URL printed in the terminal.
+
+### Build for production
+
+```bash
+npm run build
+```
+
+### Lint the project
+
+```bash
+npm run lint
+```
+
+## Project Structure
+
+```text
+campusvault/
+├── src/
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── index.css
+│   └── components/
+├── public/
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── index.html
+└── README.md
+```
+
+## Notes
+
+This project is currently a polished front-end prototype for an academic vault. The upload flow is wired for document selection, while persistent storage and backend integration can be added next depending on the product direction.
+
+## License
+
+This project is  currently for educational/demo use.

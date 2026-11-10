@@ -1,121 +1,379 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+
+import { useRef, useState } from 'react'
+import {
+  Home,
+  Library,
+  BookOpen,
+  FileText,
+  Bookmark,
+  Settings,
+  Search,
+  Bell,
+  Plus,
+  Upload,
+  FolderOpen,
+  ArrowUpRight,
+  MoreHorizontal,
+  Menu,
+  X,
+  GraduationCap,
+  File,
+  CheckCircle2,
+} from 'lucide-react'
+
+const resources = [
+  {
+    title: 'Introduction to Microeconomics',
+    unit: 'Microeconomics I',
+    category: 'LECTURE NOTES',
+    date: '10 Nov 2026',
+    type: 'PDF',
+  },
+  {
+    title: 'Financial Management CAT 1',
+    unit: 'Financial Management',
+    category: 'CAT PAPER',
+    date: '08 Nov 2026',
+    type: 'PDF',
+  },
+  {
+    title: 'Statistical Methods Revision',
+    unit: 'Statistics',
+    category: 'REVISION NOTES',
+    date: '05 Nov 2026',
+    type: 'PDF',
+  },
+  {
+    title: 'Public Finance Examination',
+    unit: 'Public Finance',
+    category: 'PAST PAPER',
+    date: '02 Nov 2026',
+    type: 'PDF',
+  },
+]
+
+const navigation = [
+  { name: 'Overview', icon: Home },
+  { name: 'My Library', icon: Library },
+  { name: 'Student Library', icon: BookOpen },
+  { name: 'Course Units', icon: GraduationCap },
+  { name: 'Past Papers', icon: FileText },
+  { name: 'Bookmarks', icon: Bookmark },
+]
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeNav, setActiveNav] = useState('Overview')
+  const [search, setSearch] = useState('')
+  const [mobileMenu, setMobileMenu] = useState(false)
+  const [selectedFile, setSelectedFile] = useState('')
+  const fileInput = useRef<HTMLInputElement>(null)
+
+  const filteredResources = resources.filter((resource) =>
+    `${resource.title} ${resource.unit} ${resource.category}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  )
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+    <div className="min-h-screen bg-white text-vault-black font-body">
+
+      {/* MOBILE HEADER */}
+      <header className="lg:hidden flex items-center justify-between border-b border-gray-100 px-5 py-4">
+        <h1 className="font-heading text-3xl">
+          CAMPUS<span className="text-vault-green">VAULT</span>
+        </h1>
+
+        <button onClick={() => setMobileMenu(!mobileMenu)}>
+          {mobileMenu ? <X /> : <Menu />}
         </button>
-      </section>
+      </header>
 
-      <div className="ticks"></div>
+      <div className="flex min-h-screen">
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {/* SIDEBAR */}
+        <aside
+          className={`${
+            mobileMenu ? 'flex' : 'hidden'
+          } lg:flex flex-col w-64 shrink-0 border-r border-gray-100 bg-white px-6 py-7 fixed lg:sticky top-0 h-screen z-40`}
+        >
+          <div className="mb-12">
+            <h1 className="font-heading text-4xl tracking-wide">
+              CAMPUS<span className="text-vault-green">VAULT</span>
+            </h1>
+            <p className="text-[10px] tracking-[0.25em] text-gray-400 mt-1">
+              YOUR ACADEMIC WORLD
+            </p>
+          </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+          <p className="text-[10px] font-bold tracking-[0.2em] text-gray-400 mb-5">
+            WORKSPACE
+          </p>
+
+          <nav className="space-y-2">
+            {navigation.map((item) => {
+              const Icon = item.icon
+              const active = activeNav === item.name
+
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    setActiveNav(item.name)
+                    setMobileMenu(false)
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition ${
+                    active
+                      ? 'bg-[#EAF5EF] text-vault-green font-semibold'
+                      : 'text-gray-500 hover:bg-gray-50 hover:text-black'
+                  }`}
+                >
+                  <Icon size={18} />
+                  {item.name}
+                  {active && (
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-vault-green" />
+                  )}
+                </button>
+              )
+            })}
+          </nav>
+
+          <div className="mt-auto">
+            <div className="bg-vault-muted rounded-xl p-4 mb-5">
+              <div className="flex items-center gap-2 mb-2">
+                <GraduationCap size={18} className="text-vault-green" />
+                <span className="text-xs font-semibold">
+                  Academic space
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Keep your learning materials organized and accessible.
+              </p>
+            </div>
+
+            <button className="flex items-center gap-3 text-sm text-gray-500 px-3 py-2">
+              <Settings size={18} />
+              Settings
+            </button>
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT */}
+        <main className="flex-1 min-w-0 px-5 sm:px-8 lg:px-12 py-7">
+
+          {/* TOP BAR */}
+          <div className="flex items-center justify-between gap-4 mb-12">
+            <div className="hidden sm:flex items-center gap-2 text-xs text-gray-400">
+              Workspace <span>/</span>
+              <span className="text-black font-medium">{activeNav}</span>
+            </div>
+
+            <div className="flex items-center gap-3 ml-auto">
+              <div className="relative hidden md:block">
+                <Search
+                  size={17}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search resources..."
+                  className="bg-gray-50 border border-gray-100 rounded-full pl-10 pr-4 py-2.5 text-xs w-64 outline-none focus:border-vault-green"
+                />
+              </div>
+
+              <button className="relative p-2.5 rounded-full border border-gray-100 hover:bg-gray-50">
+                <Bell size={18} />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-vault-green rounded-full" />
+              </button>
+
+              <div className="w-9 h-9 rounded-full bg-[#EAF5EF] flex items-center justify-center text-vault-green text-sm font-bold">
+                B
+              </div>
+            </div>
+          </div>
+
+          {/* WELCOME SECTION */}
+          <section className="mb-12">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-7 h-px bg-vault-green" />
+              <p className="text-[10px] font-bold tracking-[0.25em] text-vault-green uppercase">
+                Your academic workspace
+              </p>
+            </div>
+
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl leading-[0.85] tracking-tight">
+                  YOUR NOTES.
+                  <br />
+                  YOUR KNOWLEDGE.
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-5 max-w-md leading-relaxed">
+                  Welcome back. Your academic resources,
+                  coursework and past papers, all in one place.
+                </p>
+              </div>
+
+              <button
+                onClick={() => fileInput.current?.click()}
+                className="bg-vault-green text-white px-6 py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 hover:bg-vault-dark transition shrink-0"
+              >
+                <Plus size={18} />
+                Add resource
+              </button>
+            </div>
+          </section>
+
+          {/* STATISTICS */}
+          <section className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-12">
+            {[
+              { label: 'TOTAL RESOURCES', value: '00', icon: FileText },
+              { label: 'COURSE UNITS', value: '00', icon: GraduationCap },
+              { label: 'PAST PAPERS', value: '00', icon: BookOpen },
+              { label: 'BOOKMARKS', value: '00', icon: Bookmark },
+            ].map((stat) => {
+              const Icon = stat.icon
+
+              return (
+                <div
+                  key={stat.label}
+                  className="border border-gray-100 rounded-xl p-5 hover:border-[#A8D7BD] transition"
+                >
+                  <div className="flex items-center justify-between mb-5">
+                    <p className="text-[9px] font-bold tracking-widest text-gray-400">
+                      {stat.label}
+                    </p>
+                    <Icon size={17} className="text-vault-green" />
+                  </div>
+
+                  <p className="font-heading text-5xl">{stat.value}</p>
+                </div>
+              )
+            })}
+          </section>
+
+          {/* RECENT RESOURCES */}
+          <section className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-[10px] tracking-[0.2em] text-vault-green font-bold mb-2">
+                  YOUR COLLECTION
+                </p>
+                <h3 className="font-heading text-4xl">
+                  RECENT RESOURCES
+                </h3>
+              </div>
+
+              <button
+                onClick={() => setActiveNav('My Library')}
+                className="text-xs font-semibold flex items-center gap-2 hover:text-vault-green"
+              >
+                View library <ArrowUpRight size={16} />
+              </button>
+            </div>
+
+            <div className="border-t border-gray-200">
+              {filteredResources.map((resource, index) => (
+                <div
+                  key={resource.title}
+                  className="flex items-center gap-4 py-5 border-b border-gray-100 group"
+                >
+                  <div className="w-11 h-12 bg-[#F5F6F5] rounded-lg flex items-center justify-center shrink-0">
+                    <File size={21} className="text-vault-green" />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-sm truncate">
+                      {resource.title}
+                    </h4>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {resource.unit}
+                    </p>
+                  </div>
+
+                  <div className="hidden sm:block text-right">
+                    <p className="text-[9px] font-bold tracking-wider text-vault-green">
+                      {resource.category}
+                    </p>
+                    <p className="text-[10px] text-gray-400 mt-1">
+                      {resource.date}
+                    </p>
+                  </div>
+
+                  <button className="p-2 text-gray-400 hover:text-black">
+                    <MoreHorizontal size={19} />
+                  </button>
+                </div>
+              ))}
+
+              {filteredResources.length === 0 && (
+                <p className="py-10 text-center text-sm text-gray-400">
+                  No matching resources found.
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* UPLOAD AREA */}
+          <section className="mb-10">
+            <div className="bg-[#F8FAF8] border border-dashed border-gray-300 rounded-2xl p-8 sm:p-12 text-center">
+              <div className="w-14 h-14 bg-white border border-gray-100 rounded-xl flex items-center justify-center mx-auto mb-5">
+                <FolderOpen size={26} className="text-vault-green" />
+              </div>
+
+              <h3 className="font-heading text-3xl mb-2">
+                BUILD YOUR LIBRARY
+              </h3>
+
+              <p className="text-xs text-gray-400 mb-6">
+                Start organizing your lecture notes and past papers.
+              </p>
+
+              <button
+                onClick={() => fileInput.current?.click()}
+                className="bg-vault-black text-white rounded-full px-6 py-3 text-xs font-semibold hover:bg-vault-green transition inline-flex items-center gap-2"
+              >
+                <Upload size={15} />
+                Choose a document
+              </button>
+
+              <input
+                ref={fileInput}
+                type="file"
+                accept=".pdf,.doc,.docx,.ppt,.pptx"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) setSelectedFile(file.name)
+                }}
+              />
+
+              {selectedFile && (
+                <div className="mt-5 flex items-center justify-center gap-2 text-xs text-vault-green">
+                  <CheckCircle2 size={16} />
+                  Selected: {selectedFile}
+                  <span className="text-gray-400">
+                    (Storage integration coming next)
+                  </span>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* FOOTER */}
+          <footer className="border-t border-gray-100 pt-6 pb-4 flex flex-col sm:flex-row justify-between gap-2">
+            <p className="font-heading text-xl tracking-wide">
+              CAMPUS<span className="text-vault-green">VAULT</span>
+            </p>
+            <p className="text-[10px] text-gray-400">
+              YOUR ACADEMIC WORLD, ORGANIZED.
+            </p>
+          </footer>
+
+        </main>
+      </div>
+    </div>
   )
 }
 

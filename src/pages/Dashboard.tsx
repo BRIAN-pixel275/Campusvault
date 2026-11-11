@@ -1,16 +1,15 @@
 
 import { useRef, useState } from 'react'
+import StatCard from '../components/dashboard/StatCard'
+import RecentResources from '../components/dashboard/RecentResources'
 import {
   FileText,
   GraduationCap,
   BookOpen,
   Bookmark,
-  File,
   FolderOpen,
   Upload,
   Plus,
-  ArrowUpRight,
-  MoreHorizontal,
   CheckCircle2,
 } from 'lucide-react'
 
@@ -74,92 +73,21 @@ function Dashboard({ resources, onNavigate }: DashboardProps) {
       </section>
 
       {/* STATISTICS */}
-      <section className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-12">
-        {statistics.map((stat) => {
-          const Icon = stat.icon
+<section className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-12">
+  {statistics.map((stat) => (
+    <StatCard
+      key={stat.label}
+      label={stat.label}
+      value={stat.value}
+      icon={stat.icon}
+    />
+  ))}
+</section>
 
-          return (
-            <div
-              key={stat.label}
-              className="border border-gray-100 rounded-xl p-5 hover:border-[#A8D7BD] transition"
-            >
-              <div className="flex items-center justify-between mb-5">
-                <p className="text-[9px] font-bold tracking-widest text-gray-400">
-                  {stat.label}
-                </p>
-                <Icon size={17} className="text-vault-green" />
-              </div>
-
-              <p className="font-heading text-5xl">{stat.value}</p>
-            </div>
-          )
-        })}
-      </section>
-
-      {/* RECENT RESOURCES */}
-      <section className="mb-12">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <p className="text-[10px] tracking-[0.2em] text-vault-green font-bold mb-2">
-              YOUR COLLECTION
-            </p>
-            <h3 className="font-heading text-4xl">
-              RECENT RESOURCES
-            </h3>
-          </div>
-
-          <button
-            onClick={() => onNavigate('My Library')}
-            className="text-xs font-semibold flex items-center gap-2 hover:text-vault-green"
-          >
-            View library <ArrowUpRight size={16} />
-          </button>
-        </div>
-
-        <div className="border-t border-gray-200">
-          {resources.map((resource) => (
-            <div
-              key={resource.title}
-              className="flex items-center gap-4 py-5 border-b border-gray-100 group"
-            >
-              <div className="w-11 h-12 bg-[#F5F6F5] rounded-lg flex items-center justify-center shrink-0">
-                <File size={21} className="text-vault-green" />
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-sm truncate">
-                  {resource.title}
-                </h4>
-                <p className="text-xs text-gray-400 mt-1">
-                  {resource.unit}
-                </p>
-              </div>
-
-              <div className="hidden sm:block text-right">
-                <p className="text-[9px] font-bold tracking-wider text-vault-green">
-                  {resource.category}
-                </p>
-                <p className="text-[10px] text-gray-400 mt-1">
-                  {resource.date}
-                </p>
-              </div>
-
-              <button
-                aria-label={`More options for ${resource.title}`}
-                className="p-2 text-gray-400 hover:text-black"
-              >
-                <MoreHorizontal size={19} />
-              </button>
-            </div>
-          ))}
-
-          {resources.length === 0 && (
-            <p className="py-10 text-center text-sm text-gray-400">
-              No matching resources found.
-            </p>
-          )}
-        </div>
-      </section>
+      <RecentResources
+  resources={resources}
+  onViewLibrary={() => onNavigate('My Library')}
+/>
 
       {/* UPLOAD AREA */}
       <section className="mb-10">

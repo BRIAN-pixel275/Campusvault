@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Sidebar from './components/layout/Sidebar'
 import Topbar from './components/layout/Topbar'
 import Dashboard from './pages/Dashboard'
+import PlaceholderPage from './components/layout/PlaceholderPage'
 import { useEffect } from 'react'
 
 const resources = [
@@ -88,10 +89,17 @@ function App() {
 
     
 
-         <Dashboard
-  resources={filteredResources}
-  onNavigate={setActiveNav}
-/>
+     {activeNav === 'Overview' ? (
+  <Dashboard
+    resources={filteredResources}
+    onNavigate={setActiveNav}
+  />
+) : (
+  <PlaceholderPage
+    title={activeNav}
+    description={`Your ${activeNav.toLowerCase()} workspace. We're building this section to help you manage your academic resources more effectively.`}
+  />
+)}
 
         
 

@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import { FileText, FolderOpen } from 'lucide-react'
-import type { Resource } from './Dashboard'
+import type { Resource } from '../types/resource'
 
 interface MyLibraryProps {
   resources: Resource[]

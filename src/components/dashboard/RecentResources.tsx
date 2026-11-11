@@ -4,8 +4,8 @@ import {
   MoreHorizontal,
   ArrowUpRight,
 } from 'lucide-react'
+import type { Resource } from '../../types/resource'
 
-import type { Resource } from '../../pages/Dashboard'
 
 interface RecentResourcesProps {
   resources: Resource[]

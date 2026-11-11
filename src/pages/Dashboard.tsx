@@ -11,13 +11,7 @@ import {
   Plus,
 } from 'lucide-react'
 
-export interface Resource {
-  title: string
-  unit: string
-  category: string
-  date: string
-  type: string
-}
+import type { Resource } from '../types/resource'
 
 interface DashboardProps {
   resources: Resource[]

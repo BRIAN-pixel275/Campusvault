@@ -4,6 +4,7 @@ import Sidebar from './components/layout/Sidebar'
 import Topbar from './components/layout/Topbar'
 import Dashboard from './pages/Dashboard'
 import PlaceholderPage from './components/layout/PlaceholderPage'
+import MyLibrary from './pages/MyLibrary'
 import { useEffect } from 'react'
 
 const resources = [
@@ -94,6 +95,8 @@ function App() {
     resources={filteredResources}
     onNavigate={setActiveNav}
   />
+) : activeNav === 'My Library' ? (
+  <MyLibrary resources={filteredResources} />
 ) : (
   <PlaceholderPage
     title={activeNav}

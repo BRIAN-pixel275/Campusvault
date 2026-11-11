@@ -5,9 +5,13 @@ import Topbar from './components/layout/Topbar'
 import Dashboard from './pages/Dashboard'
 import PlaceholderPage from './components/layout/PlaceholderPage'
 import MyLibrary from './pages/MyLibrary'
+import type { Resource } from './types/resource'
 import { useEffect } from 'react'
 
-const resources = [
+
+function App() {
+
+  const [resources, setResources] = useState<Resource[]>([
   {
     title: 'Introduction to Microeconomics',
     unit: 'Microeconomics I',
@@ -36,13 +40,7 @@ const resources = [
     date: '02 Nov 2026',
     type: 'PDF',
   },
-]
-
-
-
-
-
-function App() {
+])
   const [activeNav, setActiveNav] = useState('Overview')
   const [search, setSearch] = useState('')
   const [mobileMenu, setMobileMenu] = useState(false)
@@ -55,6 +53,13 @@ function App() {
     document.body.style.overflow = ''
   }
 }, [mobileMenu])
+
+const handleAddResource = (newResource: Resource) => {
+  setResources((currentResources) => [
+    newResource,
+    ...currentResources,
+  ])
+}
 
   const filteredResources = resources.filter((resource) =>
     `${resource.title} ${resource.unit} ${resource.category}`
@@ -94,6 +99,7 @@ function App() {
   <Dashboard
     resources={filteredResources}
     onNavigate={setActiveNav}
+    onAddResource={handleAddResource}
   />
 ) : activeNav === 'My Library' ? (
   <MyLibrary resources={filteredResources} />

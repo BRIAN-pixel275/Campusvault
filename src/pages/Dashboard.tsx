@@ -16,6 +16,7 @@ import type { Resource } from '../types/resource'
 interface DashboardProps {
   resources: Resource[]
   onNavigate: (page: string) => void
+  onAddResource: (resource: Resource) => void
 }
 
 function Dashboard({ resources, onNavigate }: DashboardProps) {

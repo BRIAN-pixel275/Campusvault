@@ -29,6 +29,7 @@ function UploadZone({
     const extension = selectedFile.split('.').pop()?.toUpperCase() || 'FILE'
 
     const newResource: Resource = {
+      id: crypto.randomUUID(),
       title,
       unit,
       category,

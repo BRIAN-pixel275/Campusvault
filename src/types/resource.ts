@@ -1,4 +1,5 @@
 export interface Resource {
+  id: string
   title: string
   unit: string
   category: string

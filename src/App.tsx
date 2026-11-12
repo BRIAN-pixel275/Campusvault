@@ -13,6 +13,7 @@ function App() {
 
   const [resources, setResources] = useState<Resource[]>([
   {
+    id: 'resource-001',
     title: 'Introduction to Microeconomics',
     unit: 'Microeconomics I',
     category: 'LECTURE NOTES',
@@ -20,6 +21,7 @@ function App() {
     type: 'PDF',
   },
   {
+    id: 'resource-002',
     title: 'Financial Management CAT 1',
     unit: 'Financial Management',
     category: 'CAT PAPER',
@@ -27,6 +29,7 @@ function App() {
     type: 'PDF',
   },
   {
+    id: 'resource-003',
     title: 'Statistical Methods Revision',
     unit: 'Statistics',
     category: 'REVISION NOTES',
@@ -34,6 +37,15 @@ function App() {
     type: 'PDF',
   },
   {
+    id: 'resource-004',
+    title: 'Macroeconomics Assignment',
+    unit: 'Macroeconomics II',
+    category: 'ASSIGNMENT',
+    date: '03 Nov 2026',
+    type: 'PDF',
+  },
+  {
+    id: 'resource-005',
     title: 'Public Finance Examination',
     unit: 'Public Finance',
     category: 'PAST PAPER',

@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import PlaceholderPage from './components/layout/PlaceholderPage'
 import MyLibrary from './pages/MyLibrary'
 import type { Resource } from './types/resource'
+import StudentLibrary from './pages/StudentLibrary'
 import { useEffect } from 'react'
 
 
@@ -56,6 +57,7 @@ function App() {
   const [activeNav, setActiveNav] = useState('Overview')
   const [search, setSearch] = useState('')
   const [mobileMenu, setMobileMenu] = useState(false)
+  const [savedResourceIds, setSavedResourceIds] = useState<string[]>([])
   
 
   useEffect(() => {
@@ -72,7 +74,13 @@ const handleAddResource = (newResource: Resource) => {
     ...currentResources,
   ])
 }
-
+const handleToggleSave = (resourceId: string) => {
+  setSavedResourceIds((currentSaved) =>
+    currentSaved.includes(resourceId)
+      ? currentSaved.filter((id) => id !== resourceId)
+      : [...currentSaved, resourceId]
+  )
+}
   const filteredResources = resources.filter((resource) =>
     `${resource.title} ${resource.unit} ${resource.category}`
       .toLowerCase()
@@ -113,6 +121,12 @@ const handleAddResource = (newResource: Resource) => {
     onNavigate={setActiveNav}
     onAddResource={handleAddResource}
   />
+) : activeNav === 'Student Library' ? (
+  <StudentLibrary
+    resources={filteredResources}
+    savedResourceIds={savedResourceIds}
+    onToggleSave={handleToggleSave}
+  />
 ) : activeNav === 'My Library' ? (
   <MyLibrary resources={filteredResources} />
 ) : (
@@ -121,7 +135,6 @@ const handleAddResource = (newResource: Resource) => {
     description={`Your ${activeNav.toLowerCase()} workspace. We're building this section to help you manage your academic resources more effectively.`}
   />
 )}
-
         
 
           {/* FOOTER */}

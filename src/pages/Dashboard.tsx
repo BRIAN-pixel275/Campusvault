@@ -19,7 +19,11 @@ interface DashboardProps {
   onAddResource: (resource: Resource) => void
 }
 
-function Dashboard({ resources, onNavigate }: DashboardProps) {
+function Dashboard({
+  resources,
+  onNavigate,
+  onAddResource,
+}: DashboardProps) {
   const fileInput = useRef<HTMLInputElement>(null)
   const [selectedFile, setSelectedFile] = useState('')
 
@@ -86,6 +90,7 @@ function Dashboard({ resources, onNavigate }: DashboardProps) {
   fileInput={fileInput}
   selectedFile={selectedFile}
   onFileChange={setSelectedFile}
+  onAddResource={onAddResource}
 />
     </>
   )

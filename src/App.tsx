@@ -128,7 +128,10 @@ const handleToggleSave = (resourceId: string) => {
     onToggleSave={handleToggleSave}
   />
 ) : activeNav === 'My Library' ? (
-  <MyLibrary resources={filteredResources} />
+  <MyLibrary
+    resources={resources}
+    savedResourcesIds={savedResourceIds}
+  />
 ) : (
   <PlaceholderPage
     title={activeNav}

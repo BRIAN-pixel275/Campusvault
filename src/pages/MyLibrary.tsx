@@ -5,10 +5,18 @@ import type { Resource } from '../types/resource'
 
 interface MyLibraryProps {
   resources: Resource[]
+  savedResourcesIds: string[]
 }
 
-function MyLibrary({ resources }: MyLibraryProps) {
+function MyLibrary({
+  resources,
+  savedResourcesIds,
+}: MyLibraryProps) {
   const [activeFilter, setActiveFilter] = useState('ALL')
+
+  const savedResources = resources.filter((resource) =>
+  savedResourcesIds.includes(resource.id)
+)
 
   const filters = [
     'ALL',
@@ -18,12 +26,12 @@ function MyLibrary({ resources }: MyLibraryProps) {
     'PAST PAPER',
   ]
 
-  const filteredResources =
-    activeFilter === 'ALL'
-      ? resources
-      : resources.filter(
-          (resource) => resource.category === activeFilter
-        )
+ const filteredResources =
+  activeFilter === 'ALL'
+    ? savedResources
+    : savedResources.filter(
+        (resource) => resource.category === activeFilter
+      )
 
   return (
     <section className="py-10">
@@ -52,7 +60,7 @@ function MyLibrary({ resources }: MyLibraryProps) {
               TOTAL RESOURCES
             </p>
             <p className="font-heading text-4xl mt-1">
-              {resources.length.toString().padStart(2, '0')}
+              {savedResources.length.toString().padStart(2, '0')}
             </p>
           </div>
         </div>

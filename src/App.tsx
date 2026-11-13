@@ -9,6 +9,7 @@ import type { Resource } from './types/resource'
 import StudentLibrary from './pages/StudentLibrary'
 import CourseUnits from './pages/CourseUnits'
 import PastPapers from './pages/PastPapers'
+import Bookmarks from './pages/Bookmarks'
 import { useEffect } from 'react'
 
 
@@ -137,6 +138,12 @@ const handleToggleSave = (resourceId: string) => {
   />
   ) : activeNav === 'Past Papers' ? (
   <PastPapers
+    resources={resources}
+    savedResourceIds={savedResourceIds}
+    onToggleSave={handleToggleSave}
+  />
+  ) : activeNav === 'Bookmarks' ? (
+  <Bookmarks
     resources={resources}
     savedResourceIds={savedResourceIds}
     onToggleSave={handleToggleSave}

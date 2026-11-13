@@ -7,6 +7,7 @@ import PlaceholderPage from './components/layout/PlaceholderPage'
 import MyLibrary from './pages/MyLibrary'
 import type { Resource } from './types/resource'
 import StudentLibrary from './pages/StudentLibrary'
+import CourseUnits from './pages/CourseUnits'
 import { useEffect } from 'react'
 
 
@@ -124,6 +125,12 @@ const handleToggleSave = (resourceId: string) => {
 ) : activeNav === 'Student Library' ? (
   <StudentLibrary
     resources={filteredResources}
+    savedResourceIds={savedResourceIds}
+    onToggleSave={handleToggleSave}
+  />
+  ) : activeNav === 'Course Units' ? (
+  <CourseUnits
+    resources={resources}
     savedResourceIds={savedResourceIds}
     onToggleSave={handleToggleSave}
   />

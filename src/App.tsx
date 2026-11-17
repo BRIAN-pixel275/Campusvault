@@ -1,5 +1,7 @@
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { supabase } from './lib/supabase'
+import Auth from './pages/Auth'
+import type { Session } from '@supabase/supabase-js'
 import Sidebar from './components/layout/Sidebar'
 import Topbar from './components/layout/Topbar'
 import Dashboard from './pages/Dashboard'
@@ -10,10 +12,32 @@ import StudentLibrary from './pages/StudentLibrary'
 import CourseUnits from './pages/CourseUnits'
 import PastPapers from './pages/PastPapers'
 import Bookmarks from './pages/Bookmarks'
-import { useEffect } from 'react'
+
 
 
 function App() {
+
+  const [session, setSession] = useState<Session | null>(null)
+const [authLoading, setAuthLoading] = useState(true)
+
+useEffect(() => {
+  supabase.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error('Could not retrieve session:', error.message)
+    }
+
+    setSession(data.session)
+    setAuthLoading(false)
+  })
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    setSession(session)
+  })
+
+  return () => subscription.unsubscribe()
+}, [])
 
   const [resources, setResources] = useState<Resource[]>([
   {
@@ -90,8 +114,22 @@ const handleToggleSave = (resourceId: string) => {
       .includes(search.toLowerCase())
   )
 
+  if (authLoading) {
   return (
-    <div className="min-h-screen bg-white text-vault-black font-body">
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-gray-500 text-sm">
+        Loading CampusVault...
+      </p>
+    </div>
+  )
+}
+
+if (!session) {
+  return <Auth />
+}
+
+return (
+  <div className="min-h-screen bg-white text-vault-black font-body">
 
      
 
@@ -108,12 +146,13 @@ const handleToggleSave = (resourceId: string) => {
         {/* MAIN CONTENT */}
         <main className="flex-1 min-w-0 px-5 sm:px-8 lg:px-12 py-7">
 
-          <Topbar
+      <Topbar
   activeNav={activeNav}
   search={search}
   setSearch={setSearch}
   mobileMenu={mobileMenu}
   setMobileMenu={setMobileMenu}
+  userEmail={session.user.email ?? ''}
 />
 
     

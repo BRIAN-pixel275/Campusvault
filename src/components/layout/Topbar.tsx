@@ -4,7 +4,9 @@ import {
   Bell,
   Menu,
   X,
+  LogOut,
 } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 interface TopbarProps {
   activeNav: string
@@ -12,6 +14,7 @@ interface TopbarProps {
   setSearch: (value: string) => void
   mobileMenu: boolean
   setMobileMenu: (value: boolean) => void
+  userEmail: string
 }
 
 function Topbar({
@@ -20,7 +23,19 @@ function Topbar({
   setSearch,
   mobileMenu,
   setMobileMenu,
+  userEmail,
 }: TopbarProps) {
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      console.error('Logout failed:', error.message)
+    }
+  }
+
+  const userInitial = userEmail.charAt(0).toUpperCase() || 'S'
+
   return (
     <>
       {/* MOBILE HEADER */}
@@ -40,6 +55,7 @@ function Topbar({
 
       {/* DESKTOP AND TABLET TOPBAR */}
       <div className="flex items-center justify-between gap-4 mb-12">
+
         <div className="hidden sm:flex items-center gap-2 text-xs text-gray-400">
           Workspace
           <span>/</span>
@@ -49,6 +65,7 @@ function Topbar({
         </div>
 
         <div className="flex items-center gap-3 ml-auto">
+
           <div className="relative hidden md:block">
             <Search
               size={17}
@@ -68,16 +85,30 @@ function Topbar({
             className="relative p-2.5 rounded-full border border-gray-100 hover:bg-gray-50"
           >
             <Bell size={18} />
-
             <span className="absolute top-2 right-2 w-2 h-2 bg-vault-green rounded-full" />
           </button>
 
+          {/* USER PROFILE */}
           <div
+            title={userEmail}
             className="w-9 h-9 rounded-full bg-[#EAF5EF] flex items-center justify-center text-vault-green text-sm font-bold"
-            aria-label="User profile"
           >
-            B
+            {userInitial}
           </div>
+
+          {/* LOGOUT */}
+          <button
+            onClick={handleLogout}
+            title="Sign out"
+            aria-label="Sign out"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-full border border-gray-100 hover:bg-red-50 hover:text-red-600 transition text-gray-500"
+          >
+            <LogOut size={17} />
+            <span className="hidden sm:inline text-xs font-medium">
+              Logout
+            </span>
+          </button>
+
         </div>
       </div>
     </>

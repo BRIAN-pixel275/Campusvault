@@ -1,3 +1,4 @@
+
 export interface Resource {
   id: string
   title: string
@@ -5,4 +6,8 @@ export interface Resource {
   category: string
   date: string
   type: string
+  filePath?: string
+  fileName?: string
+  uploadedBy?: string
+  fileSize?: number
 }

@@ -30,3 +30,29 @@ export async function downloadResource(resource: Resource) {
 
   window.location.href = data.signedUrl
 }
+
+// Deletes the database row first, then the stored file
+export async function deleteResource(resource: Resource) {
+  const { data, error } = await supabase
+    .from('resources')
+    .delete()
+    .eq('id', resource.id)
+    .select('id')
+
+  if (error) throw error
+
+  // RLS silently skips rows you don't own, so check something was deleted
+  if (!data || data.length === 0) {
+    throw new Error('You can only delete resources you uploaded.')
+  }
+
+  if (resource.filePath) {
+    const { error: storageError } = await supabase.storage
+      .from(BUCKET)
+      .remove([resource.filePath])
+
+    if (storageError) {
+      console.error('File cleanup failed:', storageError.message)
+    }
+  }
+}

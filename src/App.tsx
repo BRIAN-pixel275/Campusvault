@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './lib/supabase'
 import { mapResource, type ResourceRow } from './lib/mapResource'
+import { ResourceContext } from './lib/resourceContext'
 import type { Resource } from './types/resource'
 import Auth from './pages/Auth'
 import Sidebar from './components/layout/Sidebar'
@@ -115,6 +116,11 @@ function App() {
     setResources((current) => [newResource, ...current])
   }
 
+  const handleResourceDeleted = (resourceId: string) => {
+    setResources((current) => current.filter((r) => r.id !== resourceId))
+    setSavedResourceIds((current) => current.filter((id) => id !== resourceId))
+  }
+
   const handleToggleSave = async (resourceId: string) => {
     if (!userId) return
 
@@ -172,92 +178,99 @@ function App() {
 
   // ---------- Render ----------
   return (
-    <div className="min-h-screen bg-white text-vault-black font-body">
-      <div className="flex min-h-screen">
-        <Sidebar
-          activeNav={activeNav}
-          setActiveNav={setActiveNav}
-          mobileMenu={mobileMenu}
-          setMobileMenu={setMobileMenu}
-        />
-
-        <main className="flex-1 min-w-0 px-5 sm:px-8 lg:px-12 py-7">
-          <Topbar
+    <ResourceContext.Provider
+      value={{
+        currentUserId: userId,
+        onResourceDeleted: handleResourceDeleted,
+      }}
+    >
+      <div className="min-h-screen bg-white text-vault-black font-body">
+        <div className="flex min-h-screen">
+          <Sidebar
             activeNav={activeNav}
-            search={search}
-            setSearch={setSearch}
+            setActiveNav={setActiveNav}
             mobileMenu={mobileMenu}
             setMobileMenu={setMobileMenu}
-            userEmail={session.user.email ?? ''}
           />
 
-          {resourcesLoading && (
-            <p className="text-sm text-gray-400 mb-4">
-              Loading resources...
-            </p>
-          )}
+          <main className="flex-1 min-w-0 px-5 sm:px-8 lg:px-12 py-7">
+            <Topbar
+              activeNav={activeNav}
+              search={search}
+              setSearch={setSearch}
+              mobileMenu={mobileMenu}
+              setMobileMenu={setMobileMenu}
+              userEmail={session.user.email ?? ''}
+            />
 
-          {resourcesError && (
-            <p className="text-sm text-red-500 mb-4">
-              Could not load resources: {resourcesError}
-            </p>
-          )}
+            {resourcesLoading && (
+              <p className="text-sm text-gray-400 mb-4">
+                Loading resources...
+              </p>
+            )}
 
-          {activeNav === 'Overview' ? (
-            <Dashboard
-              resources={filteredResources}
-              allResources={resources}
-              bookmarkCount={savedResourceIds.length}
-              onNavigate={setActiveNav}
-              onAddResource={handleAddResource}
-            />
-          ) : activeNav === 'Student Library' ? (
-            <StudentLibrary
-              resources={filteredResources}
-              savedResourceIds={savedResourceIds}
-              onToggleSave={handleToggleSave}
-            />
-          ) : activeNav === 'Course Units' ? (
-            <CourseUnits
-              resources={resources}
-              savedResourceIds={savedResourceIds}
-              onToggleSave={handleToggleSave}
-            />
-          ) : activeNav === 'Past Papers' ? (
-            <PastPapers
-              resources={resources}
-              savedResourceIds={savedResourceIds}
-              onToggleSave={handleToggleSave}
-            />
-          ) : activeNav === 'Bookmarks' ? (
-            <Bookmarks
-              resources={resources}
-              savedResourceIds={savedResourceIds}
-              onToggleSave={handleToggleSave}
-            />
-          ) : activeNav === 'My Library' ? (
-            <MyLibrary
-              resources={resources}
-              savedResourcesIds={savedResourceIds}
-            />
-          ) : (
-            <PlaceholderPage
-              title={activeNav}
-              description={`Your ${activeNav.toLowerCase()} workspace. We're building this section to help you manage your academic resources more effectively.`}
-            />
-          )}
+            {resourcesError && (
+              <p className="text-sm text-red-500 mb-4">
+                Could not load resources: {resourcesError}
+              </p>
+            )}
 
-          <footer className="border-t border-gray-100 pt-6 pb-4 flex flex-col sm:flex-row justify-between gap-2">
-            <p className="font-heading text-xl tracking-wide">
-              CAMPUS<span className="text-vault-green">VAULT</span>
-            </p>
-            <p className="text-[10px] text-gray-400">
-              YOUR ACADEMIC WORLD, ORGANIZED.
-            </p>
-          </footer>
-        </main>
+            {activeNav === 'Overview' ? (
+              <Dashboard
+                resources={filteredResources}
+                allResources={resources}
+                bookmarkCount={savedResourceIds.length}
+                onNavigate={setActiveNav}
+                onAddResource={handleAddResource}
+              />
+            ) : activeNav === 'Student Library' ? (
+              <StudentLibrary
+                resources={filteredResources}
+                savedResourceIds={savedResourceIds}
+                onToggleSave={handleToggleSave}
+              />
+            ) : activeNav === 'Course Units' ? (
+              <CourseUnits
+                resources={resources}
+                savedResourceIds={savedResourceIds}
+                onToggleSave={handleToggleSave}
+              />
+            ) : activeNav === 'Past Papers' ? (
+              <PastPapers
+                resources={resources}
+                savedResourceIds={savedResourceIds}
+                onToggleSave={handleToggleSave}
+              />
+            ) : activeNav === 'Bookmarks' ? (
+              <Bookmarks
+                resources={resources}
+                savedResourceIds={savedResourceIds}
+                onToggleSave={handleToggleSave}
+              />
+            ) : activeNav === 'My Library' ? (
+              <MyLibrary
+                resources={resources}
+                savedResourcesIds={savedResourceIds}
+              />
+            ) : (
+              <PlaceholderPage
+                title={activeNav}
+                description={`Your ${activeNav.toLowerCase()} workspace. We're building this section to help you manage your academic resources more effectively.`}
+              />
+            )}
+
+            <footer className="border-t border-gray-100 pt-6 pb-4 flex flex-col sm:flex-row justify-between gap-2">
+              <p className="font-heading text-xl tracking-wide">
+                CAMPUS<span className="text-vault-green">VAULT</span>
+              </p>
+              <p className="text-[10px] text-gray-400">
+                YOUR ACADEMIC WORLD, ORGANIZED.
+              </p>
+            </footer>
+          </main>
+        </div>
       </div>
-    </div>
+    </ResourceContext.Provider>
   )
 }
 

@@ -8,6 +8,7 @@ import {
   GraduationCap,
 } from 'lucide-react'
 import type { Resource } from '../types/resource'
+import ResourceActions from '../components/resources/ResourceActions'
 
 interface PastPapersProps {
   resources: Resource[]
@@ -166,7 +167,7 @@ function PastPapers({
                       {paper.unit}
                     </p>
                   </div>
-
+<ResourceActions resource={paper} />
                   <div className="border-t border-gray-100 mt-5 pt-4 flex justify-between">
                     <span className="text-[11px] text-gray-400">
                       {paper.date}

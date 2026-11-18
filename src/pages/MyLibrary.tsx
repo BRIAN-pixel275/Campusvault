@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { FileText, FolderOpen } from 'lucide-react'
 import type { Resource } from '../types/resource'
+import ResourceActions from '../components/resources/ResourceActions'
 
 interface MyLibraryProps {
   resources: Resource[]
@@ -128,6 +129,7 @@ function MyLibrary({
                 <span className="text-[10px] text-gray-400 border border-gray-100 rounded-md px-2 py-1">
                   {resource.type}
                 </span>
+                <ResourceActions resource={resource} compact />
               </div>
             ))}
           </div>

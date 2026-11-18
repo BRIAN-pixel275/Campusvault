@@ -7,6 +7,7 @@ import {
   Search,
 } from 'lucide-react'
 import type { Resource } from '../types/resource'
+import ResourceActions from '../components/resources/ResourceActions'
 
 interface BookmarksProps {
   resources: Resource[]
@@ -166,6 +167,7 @@ function Bookmarks({
                   </p>
                 </div>
 
+<ResourceActions resource={resource} />
                 <div className="border-t border-gray-100 mt-5 pt-4 flex justify-between">
                   <span className="text-[11px] text-gray-400">
                     {resource.date}

@@ -9,6 +9,7 @@ import {
   GraduationCap,
 } from 'lucide-react'
 import type { Resource } from '../types/resource'
+import ResourceActions from '../components/resources/ResourceActions'
 
 interface CourseUnitsProps {
   resources: Resource[]
@@ -111,7 +112,7 @@ function CourseUnits({
                     <h3 className="font-semibold text-sm mt-3">
                       {resource.title}
                     </h3>
-
+<ResourceActions resource={resource} />
                     <div className="border-t border-gray-100 mt-5 pt-4 flex justify-between">
                       <span className="text-[11px] text-gray-400">
                         {resource.date}

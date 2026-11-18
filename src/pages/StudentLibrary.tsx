@@ -4,10 +4,12 @@ import {
   BookOpen,
   Bookmark,
   BookmarkCheck,
+  Download,
+  ExternalLink,
   FileText,
   GraduationCap,
 } from 'lucide-react'
-import type { Resource } from '../types/resource'
+import { openResource, downloadResource } from '../lib/files'
 
 interface StudentLibraryProps {
   resources: Resource[]
@@ -20,7 +22,16 @@ function StudentLibrary({
   savedResourceIds,
   onToggleSave,
 }: StudentLibraryProps) {
+
   const [activeFilter, setActiveFilter] = useState('ALL')
+
+  const handleFileAction = async (action: () => Promise<void>) => {
+  try {
+    await action()
+  } catch (error) {
+    alert(error instanceof Error ? error.message : 'Something went wrong.')
+  }
+}
 
   const filters = [
     'ALL',
@@ -175,6 +186,23 @@ function StudentLibrary({
                     </p>
                   </div>
 
+<div className="flex gap-2 mt-4">
+  <button
+    onClick={() => handleFileAction(() => openResource(resource))}
+    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium rounded-lg border border-gray-200 py-2 hover:border-vault-green hover:text-vault-green transition"
+  >
+    <ExternalLink size={14} />
+    Open
+  </button>
+
+  <button
+    onClick={() => handleFileAction(() => downloadResource(resource))}
+    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium rounded-lg bg-vault-green text-white py-2 hover:bg-emerald-700 transition"
+  >
+    <Download size={14} />
+    Download
+  </button>
+</div>
                   <div className="border-t border-gray-100 mt-5 pt-4 flex justify-between items-center">
                     <span className="text-[11px] text-gray-400">
                       {resource.date}

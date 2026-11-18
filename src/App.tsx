@@ -38,12 +38,12 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
+  const userId = session?.user.id
+
   // ---------- Resources ----------
   const [resources, setResources] = useState<Resource[]>([])
   const [resourcesLoading, setResourcesLoading] = useState(true)
   const [resourcesError, setResourcesError] = useState('')
-
-  const userId = session?.user.id
 
   useEffect(() => {
     if (!userId) {
@@ -72,11 +72,35 @@ function App() {
     loadResources()
   }, [userId])
 
+  // ---------- Bookmarks ----------
+  const [savedResourceIds, setSavedResourceIds] = useState<string[]>([])
+
+  useEffect(() => {
+    if (!userId) {
+      setSavedResourceIds([])
+      return
+    }
+
+    const loadBookmarks = async () => {
+      const { data, error } = await supabase
+        .from('bookmarks')
+        .select('resource_id')
+
+      if (error) {
+        console.error('Could not load bookmarks:', error.message)
+        return
+      }
+
+      setSavedResourceIds(data.map((row) => row.resource_id))
+    }
+
+    loadBookmarks()
+  }, [userId])
+
   // ---------- UI state ----------
   const [activeNav, setActiveNav] = useState('Overview')
   const [search, setSearch] = useState('')
   const [mobileMenu, setMobileMenu] = useState(false)
-  const [savedResourceIds, setSavedResourceIds] = useState<string[]>([])
 
   useEffect(() => {
     document.body.style.overflow = mobileMenu ? 'hidden' : ''
@@ -91,12 +115,40 @@ function App() {
     setResources((current) => [newResource, ...current])
   }
 
-  const handleToggleSave = (resourceId: string) => {
+  const handleToggleSave = async (resourceId: string) => {
+    if (!userId) return
+
+    const isSaved = savedResourceIds.includes(resourceId)
+
+    // Update the screen immediately so it feels instant
     setSavedResourceIds((current) =>
-      current.includes(resourceId)
+      isSaved
         ? current.filter((id) => id !== resourceId)
         : [...current, resourceId]
     )
+
+    const { error } = isSaved
+      ? await supabase
+          .from('bookmarks')
+          .delete()
+          .eq('user_id', userId)
+          .eq('resource_id', resourceId)
+      : await supabase
+          .from('bookmarks')
+          .insert({ resource_id: resourceId })
+
+    if (error) {
+      console.error('Bookmark update failed:', error.message)
+
+      // Undo the screen change if the database rejected it
+      setSavedResourceIds((current) =>
+        isSaved
+          ? [...current, resourceId]
+          : current.filter((id) => id !== resourceId)
+      )
+
+      alert('Could not update your bookmark. Please try again.')
+    }
   }
 
   const filteredResources = resources.filter((resource) =>
@@ -154,6 +206,8 @@ function App() {
           {activeNav === 'Overview' ? (
             <Dashboard
               resources={filteredResources}
+              allResources={resources}
+              bookmarkCount={savedResourceIds.length}
               onNavigate={setActiveNav}
               onAddResource={handleAddResource}
             />

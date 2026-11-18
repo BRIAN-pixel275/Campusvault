@@ -100,7 +100,7 @@ function MyLibrary({
           <div className="divide-y divide-gray-100">
             {filteredResources.map((resource, index) => (
               <div
-                key={`${resource.title}-${index}`}
+                key={resource.id}
                 className="flex items-center gap-4 py-5 group"
               >
                 <div className="w-12 h-12 shrink-0 rounded-xl bg-[#F5F7F5] flex items-center justify-center">

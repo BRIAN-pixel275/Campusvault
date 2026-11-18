@@ -40,7 +40,7 @@ function RecentResources({
       <div className="border-t border-gray-200">
         {resources.map((resource) => (
           <div
-            key={resource.title}
+            key={resource.id}
             className="flex items-center gap-4 py-5 border-b border-gray-100 group"
           >
             <div className="w-11 h-12 bg-[#F5F6F5] rounded-lg flex items-center justify-center shrink-0">

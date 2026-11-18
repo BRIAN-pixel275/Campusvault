@@ -15,24 +15,37 @@ import type { Resource } from '../types/resource'
 
 interface DashboardProps {
   resources: Resource[]
+  allResources: Resource[]
+  bookmarkCount: number
   onNavigate: (page: string) => void
   onAddResource: (resource: Resource) => void
 }
 
 function Dashboard({
   resources,
+  allResources,
+  bookmarkCount,
   onNavigate,
   onAddResource,
 }: DashboardProps) {
   const fileInput = useRef<HTMLInputElement>(null)
   const [selectedFile, setSelectedFile] = useState('')
+const pad = (n: number) => String(n).padStart(2, '0')
 
-  const statistics = [
-    { label: 'TOTAL RESOURCES', value: '00', icon: FileText },
-    { label: 'COURSE UNITS', value: '00', icon: GraduationCap },
-    { label: 'PAST PAPERS', value: '00', icon: BookOpen },
-    { label: 'BOOKMARKS', value: '00', icon: Bookmark },
-  ]
+const unitCount = new Set(
+  allResources.map((r) => r.unit.trim().toLowerCase())
+).size
+
+const pastPaperCount = allResources.filter(
+  (r) => r.category === 'PAST PAPER'
+).length
+
+const statistics = [
+  { label: 'TOTAL RESOURCES', value: pad(allResources.length), icon: FileText },
+  { label: 'COURSE UNITS', value: pad(unitCount), icon: GraduationCap },
+  { label: 'PAST PAPERS', value: pad(pastPaperCount), icon: BookOpen },
+  { label: 'BOOKMARKS', value: pad(bookmarkCount), icon: Bookmark },
+]
 
   return (
     <>
@@ -81,9 +94,9 @@ function Dashboard({
   ))}
 </section>
 
-      <RecentResources
-  resources={resources}
-  onViewLibrary={() => onNavigate('My Library')}
+ <RecentResources
+  resources={resources.slice(0, 5)}
+  onViewLibrary={() => onNavigate('Student Library')}
 />
 
       <UploadZone

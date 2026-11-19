@@ -98,7 +98,7 @@ function MyLibrary({
 
         {filteredResources.length > 0 ? (
           <div className="divide-y divide-gray-100">
-            {filteredResources.map((resource, index) => (
+            {filteredResources.map((resource) => (
               <div
                 key={resource.id}
                 className="flex items-center gap-4 py-5 group"

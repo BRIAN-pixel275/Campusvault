@@ -1,37 +1,29 @@
-
 import { useState } from 'react'
 import {
   BookOpen,
   Bookmark,
   BookmarkCheck,
-  Download,
-  ExternalLink,
   FileText,
   GraduationCap,
 } from 'lucide-react'
-import { openResource, downloadResource } from '../lib/files'
+import ResourceActions from '../components/resources/ResourceActions'
+import { useResourceSearch, type SortOption } from '../lib/useResourceSearch'
 
 interface StudentLibraryProps {
-  resources: Resource[]
+  search: string
+  resourceCount: number
   savedResourceIds: string[]
   onToggleSave: (resourceId: string) => void
 }
 
 function StudentLibrary({
-  resources,
+  search,
+  resourceCount,
   savedResourceIds,
   onToggleSave,
 }: StudentLibraryProps) {
-
   const [activeFilter, setActiveFilter] = useState('ALL')
-
-  const handleFileAction = async (action: () => Promise<void>) => {
-  try {
-    await action()
-  } catch (error) {
-    alert(error instanceof Error ? error.message : 'Something went wrong.')
-  }
-}
+  const [sort, setSort] = useState<SortOption>('newest')
 
   const filters = [
     'ALL',
@@ -41,12 +33,20 @@ function StudentLibrary({
     'PAST PAPER',
   ]
 
-  const filteredResources =
-    activeFilter === 'ALL'
-      ? resources
-      : resources.filter(
-          (resource) => resource.category === activeFilter
-        )
+  const {
+    results: filteredResources,
+    total,
+    loading,
+    loadingMore,
+    error,
+    hasMore,
+    loadMore,
+  } = useResourceSearch({
+    search,
+    category: activeFilter,
+    sort,
+    refreshKey: resourceCount,
+  })
 
   return (
     <div className="space-y-8">
@@ -78,7 +78,7 @@ function StudentLibrary({
                 Available resources
               </p>
               <h2 className="font-heading text-4xl mt-2">
-                {resources.length}
+                {resourceCount}
               </h2>
             </div>
             <BookOpen size={25} className="text-emerald-400" />
@@ -130,11 +130,36 @@ function StudentLibrary({
             </button>
           ))}
         </div>
+
+        <div className="flex items-center justify-between gap-3 mt-1">
+          <p className="text-xs text-gray-400">
+            {loading
+              ? 'Searching...'
+              : `${total} resource${total === 1 ? '' : 's'} found`}
+          </p>
+
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortOption)}
+            aria-label="Sort resources"
+            className="text-xs border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-600 focus:outline-none focus:border-vault-green"
+          >
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="title">Title A–Z</option>
+          </select>
+        </div>
       </section>
 
       {/* Resource cards */}
       <section>
-        {filteredResources.length > 0 ? (
+        {error ? (
+          <p className="text-sm text-red-500">
+            Could not load resources: {error}
+          </p>
+        ) : loading && filteredResources.length === 0 ? (
+          <p className="text-sm text-gray-400">Searching...</p>
+        ) : filteredResources.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {filteredResources.map((resource) => {
               const isSaved = savedResourceIds.includes(resource.id)
@@ -186,23 +211,8 @@ function StudentLibrary({
                     </p>
                   </div>
 
-<div className="flex gap-2 mt-4">
-  <button
-    onClick={() => handleFileAction(() => openResource(resource))}
-    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium rounded-lg border border-gray-200 py-2 hover:border-vault-green hover:text-vault-green transition"
-  >
-    <ExternalLink size={14} />
-    Open
-  </button>
+                  <ResourceActions resource={resource} />
 
-  <button
-    onClick={() => handleFileAction(() => downloadResource(resource))}
-    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium rounded-lg bg-vault-green text-white py-2 hover:bg-emerald-700 transition"
-  >
-    <Download size={14} />
-    Download
-  </button>
-</div>
                   <div className="border-t border-gray-100 mt-5 pt-4 flex justify-between items-center">
                     <span className="text-[11px] text-gray-400">
                       {resource.date}
@@ -225,6 +235,18 @@ function StudentLibrary({
             <p className="text-xs text-gray-400 mt-2">
               Try another category or check back later.
             </p>
+          </div>
+        )}
+
+        {hasMore && !error && (
+          <div className="text-center mt-8">
+            <button
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="rounded-full border border-gray-200 px-6 py-2.5 text-xs font-medium text-gray-600 hover:border-vault-green hover:text-vault-green disabled:opacity-50 transition"
+            >
+              {loadingMore ? 'Loading...' : 'Load more'}
+            </button>
           </div>
         )}
       </section>

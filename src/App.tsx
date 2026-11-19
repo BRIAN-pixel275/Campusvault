@@ -225,10 +225,11 @@ function App() {
               />
             ) : activeNav === 'Student Library' ? (
               <StudentLibrary
-                resources={filteredResources}
-                savedResourceIds={savedResourceIds}
-                onToggleSave={handleToggleSave}
-              />
+  search={search}
+  resourceCount={resources.length}
+  savedResourceIds={savedResourceIds}
+  onToggleSave={handleToggleSave}
+/>
             ) : activeNav === 'Course Units' ? (
               <CourseUnits
                 resources={resources}

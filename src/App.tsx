@@ -5,6 +5,7 @@ import { mapResource, type ResourceRow } from './lib/mapResource'
 import { ResourceContext } from './lib/resourceContext'
 import type { Resource } from './types/resource'
 import Auth from './pages/Auth'
+import ResetPassword from './pages/ResetPassword'
 import Sidebar from './components/layout/Sidebar'
 import Topbar from './components/layout/Topbar'
 import PlaceholderPage from './components/layout/PlaceholderPage'
@@ -19,6 +20,7 @@ function App() {
   // ---------- Auth ----------
   const [session, setSession] = useState<Session | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [recovering, setRecovering] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data, error }) => {
@@ -32,7 +34,10 @@ function App() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setRecovering(true)
+      }
       setSession(newSession)
     })
 
@@ -176,6 +181,10 @@ function App() {
     return <Auth />
   }
 
+  if (recovering) {
+    return <ResetPassword onDone={() => setRecovering(false)} />
+  }
+
   // ---------- Render ----------
   return (
     <ResourceContext.Provider
@@ -225,11 +234,11 @@ function App() {
               />
             ) : activeNav === 'Student Library' ? (
               <StudentLibrary
-  search={search}
-  resourceCount={resources.length}
-  savedResourceIds={savedResourceIds}
-  onToggleSave={handleToggleSave}
-/>
+                search={search}
+                resourceCount={resources.length}
+                savedResourceIds={savedResourceIds}
+                onToggleSave={handleToggleSave}
+              />
             ) : activeNav === 'Course Units' ? (
               <CourseUnits
                 resources={resources}

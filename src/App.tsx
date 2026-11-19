@@ -102,6 +102,31 @@ function App() {
 
     loadBookmarks()
   }, [userId])
+  const [displayName, setDisplayName] = useState('')
+
+useEffect(() => {
+  if (!userId) {
+    setDisplayName('')
+    return
+  }
+
+  const loadProfile = async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', userId)
+      .maybeSingle()
+
+    if (error) {
+      console.error('Could not load profile:', error.message)
+      return
+    }
+
+    setDisplayName(data?.full_name ?? '')
+  }
+
+  loadProfile()
+}, [userId])
 
   // ---------- UI state ----------
   const [activeNav, setActiveNav] = useState('Overview')
@@ -210,6 +235,7 @@ function App() {
               mobileMenu={mobileMenu}
               setMobileMenu={setMobileMenu}
               userEmail={session.user.email ?? ''}
+              userName={displayName}
             />
 
             {resourcesLoading && (

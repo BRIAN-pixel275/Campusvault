@@ -7,6 +7,7 @@ type Mode = 'login' | 'signup' | 'forgot'
 function Auth() {
   const [mode, setMode] = useState<Mode>('login')
   const [email, setEmail] = useState('')
+    const [fullName, setFullName] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -32,10 +33,10 @@ function Auth() {
         if (error) throw error
       } else if (mode === 'signup') {
         const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-        })
-
+  email,
+  password,
+  options: { data: { full_name: fullName.trim() } },
+})
         if (error) throw error
 
         if (!data.session) {
@@ -109,7 +110,20 @@ function Auth() {
             <h2 className="text-2xl font-semibold">{heading}</h2>
             <p className="text-sm text-gray-500 mt-2">{subheading}</p>
           </div>
-
+{mode === 'signup' && (
+  <div>
+    <label className="text-sm font-medium block mb-2">Full name</label>
+    <input
+      type="text"
+      required
+      maxLength={80}
+      value={fullName}
+      onChange={(e) => setFullName(e.target.value)}
+      placeholder="Your full name"
+      className="w-full border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:border-vault-green"
+    />
+  </div>
+)}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="text-sm font-medium block mb-2">

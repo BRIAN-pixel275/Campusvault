@@ -15,6 +15,7 @@ interface TopbarProps {
   mobileMenu: boolean
   setMobileMenu: (value: boolean) => void
   userEmail: string
+  userName: string
 }
 
 function Topbar({
@@ -24,6 +25,7 @@ function Topbar({
   mobileMenu,
   setMobileMenu,
   userEmail,
+  userName
 }: TopbarProps) {
 
   const handleLogout = async () => {
@@ -34,7 +36,8 @@ function Topbar({
     }
   }
 
-  const userInitial = userEmail.charAt(0).toUpperCase() || 'S'
+  const userInitial =
+  (userName || userEmail).charAt(0).toUpperCase() || 'S'
 
   return (
     <>
@@ -89,13 +92,20 @@ function Topbar({
           </button>
 
           {/* USER PROFILE */}
-          <div
-            title={userEmail}
-            className="w-9 h-9 rounded-full bg-[#EAF5EF] flex items-center justify-center text-vault-green text-sm font-bold"
-          >
-            {userInitial}
-          </div>
+<div className="flex items-center gap-2">
+  <div
+    title={userName || userEmail}
+    className="w-9 h-9 rounded-full bg-[#EAF5EF] flex items-center justify-center text-vault-green text-sm font-bold"
+  >
+    {userInitial}
+  </div>
 
+  {userName && (
+    <span className="hidden lg:inline text-xs font-medium max-w-[140px] truncate">
+      {userName}
+    </span>
+  )}
+</div>
           {/* LOGOUT */}
           <button
             onClick={handleLogout}

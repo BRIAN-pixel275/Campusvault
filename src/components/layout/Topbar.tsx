@@ -1,4 +1,3 @@
-
 import {
   Search,
   Bell,
@@ -16,6 +15,7 @@ interface TopbarProps {
   setMobileMenu: (value: boolean) => void
   userEmail: string
   userName: string
+  onOpenProfile: () => void
 }
 
 function Topbar({
@@ -25,7 +25,8 @@ function Topbar({
   mobileMenu,
   setMobileMenu,
   userEmail,
-  userName
+  userName,
+  onOpenProfile,
 }: TopbarProps) {
 
   const handleLogout = async () => {
@@ -37,7 +38,7 @@ function Topbar({
   }
 
   const userInitial =
-  (userName || userEmail).charAt(0).toUpperCase() || 'S'
+    (userName || userEmail).charAt(0).toUpperCase() || 'S'
 
   return (
     <>
@@ -92,20 +93,23 @@ function Topbar({
           </button>
 
           {/* USER PROFILE */}
-<div className="flex items-center gap-2">
-  <div
-    title={userName || userEmail}
-    className="w-9 h-9 rounded-full bg-[#EAF5EF] flex items-center justify-center text-vault-green text-sm font-bold"
-  >
-    {userInitial}
-  </div>
+          <button
+            onClick={onOpenProfile}
+            title="Open your profile"
+            aria-label="Open your profile"
+            className="flex items-center gap-2 rounded-full hover:opacity-80 transition"
+          >
+            <div className="w-9 h-9 rounded-full bg-[#EAF5EF] flex items-center justify-center text-vault-green text-sm font-bold">
+              {userInitial}
+            </div>
 
-  {userName && (
-    <span className="hidden lg:inline text-xs font-medium max-w-[140px] truncate">
-      {userName}
-    </span>
-  )}
-</div>
+            {userName && (
+              <span className="hidden lg:inline text-xs font-medium max-w-[140px] truncate">
+                {userName}
+              </span>
+            )}
+          </button>
+
           {/* LOGOUT */}
           <button
             onClick={handleLogout}

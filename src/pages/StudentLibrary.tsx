@@ -209,6 +209,11 @@ function StudentLibrary({
                     <p className="text-xs text-gray-500 mt-1">
                       {resource.unit}
                     </p>
+                    {resource.uploaderName && (
+  <p className="text-[11px] text-gray-400 mt-1">
+    Uploaded by {resource.uploaderName}
+  </p>
+)}
                   </div>
 
                   <ResourceActions resource={resource} />
@@ -254,4 +259,4 @@ function StudentLibrary({
   )
 }
 
-export default StudentLibrary
+export default StudentLibrary 

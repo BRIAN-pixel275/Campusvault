@@ -10,4 +10,5 @@ export interface Resource {
   fileName?: string
   uploadedBy?: string
   fileSize?: number
+  uploaderName?: string
 }

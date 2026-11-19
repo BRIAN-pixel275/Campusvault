@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './lib/supabase'
-import { mapResource, type ResourceRow } from './lib/mapResource'
+import { mapResourcesWithUploaders, type ResourceRow } from './lib/mapResource'
+import Profile from './pages/Profile'
 import { ResourceContext } from './lib/resourceContext'
 import type { Resource } from './types/resource'
 import Auth from './pages/Auth'
@@ -69,7 +70,7 @@ function App() {
       if (error) {
         setResourcesError(error.message)
       } else {
-        setResources((data as ResourceRow[]).map(mapResource))
+    setResources(await mapResourcesWithUploaders(data as ResourceRow[]))
       }
 
       setResourcesLoading(false)
@@ -142,9 +143,12 @@ useEffect(() => {
   }, [mobileMenu])
 
   // ---------- Handlers ----------
-  const handleAddResource = (newResource: Resource) => {
-    setResources((current) => [newResource, ...current])
-  }
+ const handleAddResource = (newResource: Resource) => {
+  setResources((current) => [
+    { ...newResource, uploaderName: displayName || undefined },
+    ...current,
+  ])
+}
 
   const handleResourceDeleted = (resourceId: string) => {
     setResources((current) => current.filter((r) => r.id !== resourceId))
@@ -236,6 +240,7 @@ useEffect(() => {
               setMobileMenu={setMobileMenu}
               userEmail={session.user.email ?? ''}
               userName={displayName}
+              onOpenProfile={() => setActiveNav('Profile')}
             />
 
             {resourcesLoading && (
@@ -288,6 +293,12 @@ useEffect(() => {
                 resources={resources}
                 savedResourcesIds={savedResourceIds}
               />
+              ) : activeNav === 'Profile' ? (
+  <Profile
+    userId={session.user.id}
+    email={session.user.email ?? ''}
+    onSaved={setDisplayName}
+  />
             ) : (
               <PlaceholderPage
                 title={activeNav}

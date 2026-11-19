@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
-import { mapResource, type ResourceRow } from './mapResource'
+import { mapResourcesWithUploaders, type ResourceRow } from './mapResource'
 import type { Resource } from '../types/resource'
 
 export type SortOption = 'newest' | 'oldest' | 'title'
@@ -80,9 +80,12 @@ export function useResourceSearch({
       if (error) {
         setError(error.message)
       } else {
-        setResults((data as ResourceRow[]).map(mapResource))
+        const mapped = await mapResourcesWithUploaders(data as ResourceRow[])
+        if (cancelled) return
+        setResults(mapped)
         setTotal(count ?? 0)
       }
+
       setLoading(false)
     }
 
@@ -103,12 +106,13 @@ export function useResourceSearch({
     if (error) {
       setError(error.message)
     } else {
-      const next = (data as ResourceRow[]).map(mapResource)
+      const next = await mapResourcesWithUploaders(data as ResourceRow[])
       setResults((current) => {
         const seen = new Set(current.map((r) => r.id))
         return [...current, ...next.filter((r) => !seen.has(r.id))]
       })
     }
+
     setLoadingMore(false)
   }
 

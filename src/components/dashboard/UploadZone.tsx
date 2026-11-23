@@ -4,6 +4,7 @@ import { FileText, Upload, X, CheckCircle } from 'lucide-react'
 import type { RefObject } from 'react'
 import type { Resource } from '../../types/resource'
 import { supabase } from '../../lib/supabase'
+import { uploadFile } from '../../lib/uploadFile'
 
 interface UploadZoneProps {
   fileInput: RefObject<HTMLInputElement | null>
@@ -64,19 +65,8 @@ function UploadZone({
         throw new Error('Please sign in before uploading a resource.')
       }
 
-      // Create a unique storage path for this document
-      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
-      uploadedFilePath = `${user.id}/${crypto.randomUUID()}-${safeFileName}`
-
-      // Upload the actual document to Supabase Storage
-      const { error: storageError } = await supabase.storage
-        .from('campusvault-resources')
-        .upload(uploadedFilePath, file, {
-          contentType: file.type || 'application/octet-stream',
-          upsert: false,
-        })
-
-      if (storageError) throw storageError
+      // Upload the document to Supabase Storage
+      uploadedFilePath = await uploadFile(file, user.id)
 
       // Save the document details in the database
       const { data: resourceData, error: databaseError } = await supabase

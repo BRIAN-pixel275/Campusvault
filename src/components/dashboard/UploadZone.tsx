@@ -12,6 +12,8 @@ interface UploadZoneProps {
   onFileChange: (fileName: string) => void
   onAddResource: (resource: Resource) => void
 }
+const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'ppt', 'pptx']
+const MAX_FILE_SIZE = 20 * 1024 * 1024
 
 function UploadZone({
   fileInput,
@@ -26,10 +28,22 @@ function UploadZone({
   const [uploading, setUploading] = useState(false)
   const [message, setMessage] = useState('')
 
-  const handleFileSelection = (selected: File | undefined) => {
+    const handleFileSelection = (selected: File | undefined) => {
     if (!selected) return
 
-    if (selected.size > 20 * 1024 * 1024) {
+    const extension = selected.name.split('.').pop()?.toLowerCase() ?? ''
+
+    if (!ALLOWED_EXTENSIONS.includes(extension)) {
+      setMessage('Only PDF, DOC, DOCX, PPT or PPTX files are allowed.')
+      return
+    }
+
+    if (selected.size === 0) {
+      setMessage('That file is empty.')
+      return
+    }
+
+    if (selected.size > MAX_FILE_SIZE) {
       setMessage('The file must not exceed 20 MB.')
       return
     }
@@ -45,6 +59,10 @@ function UploadZone({
 
     if (!file) {
       setMessage('Please select a document first.')
+      return
+    }
+        if (!title.trim() || !unit.trim()) {
+      setMessage('Please enter a title and a course unit.')
       return
     }
 
